@@ -10,18 +10,16 @@ import(
   logger "github.com/Sirupsen/logrus"
   )
 
+// To run the server
+// TLS_CERT=../keys/cert.pem TLS_KEY=../keys/key.pem PORT=9323 ./search_server
+
+
 func main() {
   db, err := database.SetupConnection()
   if err != nil {
     logger.Error(err)
     os.Exit(2)
   }
-
-  if err = db.PopulateDb(); err != nil {
-    logger.Error(err)
-    os.Exit(2)
-  }
-
   defer db.Close()
 
   cert := os.Getenv(resources.TLS_CERT_FLAG)

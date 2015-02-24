@@ -1,12 +1,13 @@
-FROM golang:1.3
-MAINTAINER OpDemand <info@opdemand.com>
+# golang image where workspace (GOPATH) configured at /go.
+FROM golang:latest
 
-WORKDIR /go/src/github.com/deis/deis/logspout
+ADD ./keys/cert.pem cert.pem
+ADD ./keys/key.pem key.pem
 
-ENV CGO_ENABLED 0
+RUN go get github.com/hectorj2f/search_networking/server
+RUN go install github.com/hectorj2f/search_networking/server
 
-RUN go get github.com/tools/godep
+CMD ["./bin/server"]
 
-ADD . /go/src/github.com/deis/deis/logspout
 
-RUN godep go build -a -ldflags '-s' && cp logspout /go/bin/logspout
+EXPOSE 3333

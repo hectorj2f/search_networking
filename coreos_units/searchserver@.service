@@ -1,0 +1,15 @@
+[Unit]
+Description=Search Socket server
+After=docker.service
+
+[Service]
+TimeoutStartSec=0
+KillMode=none
+ExecStartPre=-/usr/bin/docker kill searchserver
+ExecStartPre=-/usr/bin/docker rm searchserver
+ExecStartPre=/usr/bin/docker pull hectorj2f/search_networking
+ExecStart=/usr/bin/docker run -e PGPORT=5432 -e PGHOST=54.153.93.149 -e TLS_CERT=cert.pem -e TLS_KEY=key.pem --name searchserver -p 9323:9323 hectorj2f/search_networking
+ExecStop=/usr/bin/docker stop searchserver
+
+[X-Fleet]
+X-Conflicts=searchserver@*.service

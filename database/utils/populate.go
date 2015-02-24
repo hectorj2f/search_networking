@@ -1,19 +1,40 @@
-package database
+package main
 
 import (
   "fmt"
   "time"
+  "os"
+  "strconv"
+
+  "github.com/hectorj2f/search_networking/database"
 
   "github.com/jmcvetta/randutil"
   logger "github.com/Sirupsen/logrus"
 )
 
 const(
-  AMOUNT_USERS = 75
+  AMOUNT_USERS = 200
+  USERS_FLAG = "USERS"
   )
 
-func makeUsersTable(db *DB) error {
-  _, err := db.Conn.Exec("DROP TABLE users")
+
+func main(){
+  db, err := database.SetupConnection()
+  if err != nil {
+    logger.Error(err)
+    os.Exit(2)
+  }
+
+  if err = populateDb(db); err != nil {
+    logger.Error(err)
+    os.Exit(2)
+  }
+
+  defer db.Close()
+}
+
+func makeUsersTable(db *database.DB) error {
+  _, err := db.Conn.Exec("DROP TABLE IF EXISTS users")
   if err != nil {
       return err
   }
@@ -36,11 +57,16 @@ func choiceString(choices []string) string {
   return winner
 }
 
-func (db *DB) PopulateDb() error {
-  logger.Debug("Populating the database...")
+func populateDb(db *database.DB) error {
+  logger.Info("Populating the database...")
   makeUsersTable(db)
 
-  for i := 0; i < AMOUNT_USERS; i++ {
+  amout_users := AMOUNT_USERS
+  if os.Getenv(USERS_FLAG) != "" {
+    amout_users, _ = strconv.Atoi(os.Getenv(USERS_FLAG))
+  }
+
+  for i := 0; i < amout_users; i++ {
       alias, _ := randutil.AlphaString(5)
       username := fmt.Sprintf("%s%s", choiceString([]string{"Jerry", "Johh", "Richard", "Brown", "Hector", "Stephan", "Anna"}), alias)
       role := choiceString([]string{"operations", "admin", "developer", "user"})

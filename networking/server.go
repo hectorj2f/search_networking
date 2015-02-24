@@ -8,7 +8,6 @@ import (
   "strconv"
 
   "github.com/hectorj2f/search_networking/api"
-  "github.com/hectorj2f/search_networking/resources"
   "github.com/hectorj2f/search_networking/networking/serializer"
   "github.com/hectorj2f/search_networking/types"
 
@@ -31,14 +30,14 @@ func startListener(cert string, key string, port int) (net.Listener, error){
       Certificates:       []tls.Certificate{tlsCert},
     }
 
-    listener, err = tls.Listen("tcp", fmt.Sprintf("%s:%s", resources.SERVER_ADDR, strconv.Itoa(port)), tlsConfig)
+    listener, err = tls.Listen("tcp", fmt.Sprintf(":%s", strconv.Itoa(port)), tlsConfig)
     if err != nil {
       return nil, err
     }
   } else {
     var err error
     logger.Info("TLS configuration is disabled")
-    listener, err = net.Listen("tcp", fmt.Sprintf("%s:%s", resources.SERVER_ADDR, strconv.Itoa(port)))
+    listener, err = net.Listen("tcp", fmt.Sprintf(":%s", strconv.Itoa(port)))
     if err != nil {
       return nil, err
     }

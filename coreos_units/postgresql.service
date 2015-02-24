@@ -1,0 +1,12 @@
+[Unit]
+Description=PostgreSQL database
+After=docker.service
+
+[Service]
+TimeoutStartSec=0
+KillMode=none
+ExecStartPre=-/usr/bin/docker kill postgresql
+ExecStartPre=-/usr/bin/docker rm postgresql
+ExecStartPre=/usr/bin/docker pull postgres
+ExecStart=/usr/bin/docker run -e POSTGRES_USER=giantswarm -e POSTGRES_PASSWORD=password --name postgresql -p 5432:5432 postgres
+ExecStop=/usr/bin/docker stop postgresql

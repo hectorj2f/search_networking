@@ -8,7 +8,7 @@ const (
   DB_SERVICE = "postgres"
   DB_ADDR = "192.168.59.104"
   DB_NAME = "giantswarm"
-  DB_PORT = "49187"
+  DB_PORT = "5432"
   DB_USERNAME = "giantswarm"
   DB_PASSWORD = "password"
   DB_SSL_MODE = "disable"

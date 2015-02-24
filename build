@@ -1,0 +1,32 @@
+#!/bin/bash -e
+
+USER_PATH="github.com/hectorj2f"
+REPO_PATH="${USER_PATH}/search_networking"
+
+if [ ! -h gopath/src/${REPO_PATH} ]; then
+	mkdir -p gopath/src/${USER_PATH}
+	ln -s ../../../.. gopath/src/${REPO_PATH} || exit 255
+fi
+
+export GOBIN=${PWD}/bin
+export GOPATH=${GOPATH}:${PWD}/gopath
+
+eval $(go env)
+
+go get github.com/hectorj2f/search_networking/database
+go get code.google.com/p/go-uuid/uuid
+go get github.com/jmcvetta/randutil
+go get github.com/lib/pq
+go get gopkg.in/vmihailenco/msgpack.v2
+go get github.com/docker/libchan
+go get github.com/docker/libchan/spdy
+go get github.com/Sirupsen/logrus
+
+echo "Building test server socket..."
+go build -o $GOBIN/socketserver ${REPO_PATH}/test
+
+echo "Building search server ..."
+go build -o $GOBIN/search_server ${REPO_PATH}/server
+
+echo "Building db populate tool ..."
+go build -o $GOBIN/populateDB ${REPO_PATH}/database/utils
