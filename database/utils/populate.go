@@ -87,6 +87,6 @@ func populateDb(db *database.DB) error {
       }
   }
 
-  logger.Debugf("Database has %d users.", AMOUNT_USERS)
+  logger.Infof("Database populated with %d users.", AMOUNT_USERS)
   return nil
 }

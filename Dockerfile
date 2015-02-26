@@ -10,4 +10,4 @@ RUN go install github.com/hectorj2f/search_networking/server
 CMD ["./bin/server"]
 
 
-EXPOSE 3333
+EXPOSE 9323 
