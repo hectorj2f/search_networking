@@ -1,0 +1,11 @@
+[Unit]
+Description=Discovery Search server
+BindsTo=searchserver@%i.service
+After=searchserver@%i.service
+
+[Service]
+ExecStart=/bin/sh -c "while true; do etcdctl set searchserver@%i '{ \"host\": \"%H\", \"port\": 9323, \"version\": \"52c7248a14\" }' --ttl 60;sleep 50;done"
+ExecStop=/usr/bin/etcdctl rm searchserver@%i
+
+[X-Fleet]
+MachineOf=searchserver@%i.service
