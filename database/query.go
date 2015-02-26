@@ -4,12 +4,24 @@ import (
 	"database/sql"
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/hectorj2f/search_networking/types"
 
 	logger "github.com/Sirupsen/logrus"
 )
 
+func RegisterRequest(db *DB, state string, id string) (error) {
+	// TODO: Store remote IP making the request
+	_, err := db.Conn.Exec("INSERT INTO requests (message_id, created, state) VALUES ($1, $2, $3)", id, time.Now(), state)
+	return err
+}
+func UpdateRequest(db *DB, state string, id string) (error) {
+	// TODO: Lock
+	_, err := db.Conn.Exec("UPDATE requests SET state = $1, updated = $2 WHERE message_id = $3", state, time.Now(), id)
+	// TODO: Unlock the transaction
+	return err
+}
 
 func GetUsers(db *DB) ([]map[string]interface{}, error) {
 	result, err := executeQuery(db, "SELECT id, created, username, role, organization, password FROM users")
@@ -83,13 +95,13 @@ func executeQuery(db *DB, criteria string, args ...interface{}) ([]map[string]in
 			users = append(users, u)
 	}
 
-	result := prepareOutput(users)
+	result := prepareUsersOutput(users)
 
 	return result, nil
 }
 
 
-func prepareOutput(users []types.User) ( []map[string]interface{} ) {
+func prepareUsersOutput(users []types.User) ( []map[string]interface{} ) {
 		logger.Infof("Found users: %s", strconv.Itoa(len(users)))
 		list_users := make([]map[string]interface{}, 0)
 		for _, user := range users {

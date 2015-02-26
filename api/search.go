@@ -11,10 +11,6 @@ func SearchUsers(query map[string]interface{}) ([]map[string]interface{}, error)
   db := database.GetDatabase()
 
   if len(query) > 0 {
-    /*if _, present := query["organization"]; present {
-      return database.GetUsersByOrganization(db, query["organization"].(string))
-    }
-    */
     return database.GetUsersByMultipleCriteria(db, query)
   }
   return database.GetUsers(db)

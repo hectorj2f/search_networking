@@ -13,7 +13,7 @@ import (
 )
 
 const(
-  AMOUNT_USERS = 200
+  AMOUNT_USERS = 500
   USERS_FLAG = "USERS"
   )
 
@@ -38,7 +38,16 @@ func makeUsersTable(db *database.DB) error {
   if err != nil {
       return err
   }
+  _, err = db.Conn.Exec("DROP TABLE IF EXISTS requests")
+  if err != nil {
+      return err
+  }
   _, err = db.Conn.Exec("CREATE TABLE users (id serial primary key, created timestamp without time zone, username text NOT NULL, role text NOT NULL, organization text NOT NULL, password text NOT NULL)")
+  if err != nil {
+      return err
+  }
+
+  _, err = db.Conn.Exec("CREATE TABLE requests (message_id text NOT NULL, created timestamp without time zone, updated timestamp without time zone, state text NOT NULL)")
   if err != nil {
       return err
   }
