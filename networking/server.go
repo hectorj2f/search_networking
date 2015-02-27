@@ -46,7 +46,6 @@ func Server(cert string, key string, port int) error {
 
     // Go routine to wait for incoming messages
     go waitForMessages(receiver, transport)
-    time.Sleep(500 * time.Millisecond)
     transport.Close()
 
   }

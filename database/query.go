@@ -52,8 +52,16 @@ func GetUsersByMultipleCriteria(db *DB, query map[string]interface{}) ([]map[str
 	where := ""
 	for key, value := range query {
 		if len(where) > 0 {
+			if key == "username" {
+				where = fmt.Sprintf("%s and %s = '%%s%'", where, key, value)
+				continue
+			}
 			where = fmt.Sprintf("%s and %s = '%s'", where, key, value)
 		} else {
+			if key == "username" {
+				where = fmt.Sprintf("%s = '%%s%'", where, key, value)
+				continue
+			}
 			where = fmt.Sprintf("%s = '%s'", key, value)
 		}
 	}
